@@ -116,7 +116,6 @@ void relu_backprop(Activation* output, Activation* input) {
 
 
 void conv_ffw1(Activation* input, Activation* output, Matrix* weights, Vector* biases, int filter_size, int n_filters, int filter_stride, int padding) {
-	cerr << "new" << endl;
 	int input_cols = input->cols;
 	int input_depth = input->depth;
 	int input_rows = input->size / input_depth / input_cols;
@@ -144,7 +143,6 @@ void conv_ffw1(Activation* input, Activation* output, Matrix* weights, Vector* b
 	int outpt_index = 0;
 	int weights_index = 0;
 	int temp_index = 0;
-	//int temp_index = weights_index; // ? right
 
 	for (n = 0; n < n_filters; n++) {
 		for (d = 0; d < input_depth; d++) {
@@ -155,61 +153,31 @@ void conv_ffw1(Activation* input, Activation* output, Matrix* weights, Vector* b
 					for (j_ = 0; j_ < filter_size; j_++) {
 						for (i_ = 0; i_ < filter_size; i_++) {
 							cerr << weights_index << endl;
-							cerr << inpt_index << endl;
-							cerr << outpt_index << endl;
-							cerr << temp_index << endl;
-							cerr << "----" << endl;
-							float a = input->values[inpt_index];
-							float b = weights->values[weights_index];
-							float c = temp.values[temp_index];
-							temp.values[temp_index] += weights->values[weights_index] * input->values[inpt_index];
-
-							inpt_index += 1;
-							weights_index += 1;
+							temp.values[temp_index] += weights->values[weights_index++] * input->values[inpt_index++];
 						}
-						inpt_index -= filter_size;
-						weights_index -= filter_size;
-
-						inpt_index += input_cols;
-						weights_index += filter_size;
-						
+						inpt_index += input_cols - filter_size;
 					}
 					temp.values[temp_index] += biases->values[n] / input_depth;
 
-					inpt_index -= filter_size * input_cols;
-					weights_index -= filter_size * filter_size; // 0
-
-
-					inpt_index += filter_stride;
-					temp_index += 1;
+					weights_index -= filter_size * filter_size;
+					inpt_index += filter_stride - filter_size * input_cols;
+					temp_index ++;
 				}
-				inpt_index -= output_cols * filter_stride;
-				temp_index -= output_cols;
-
-
-				inpt_index += filter_stride * input_cols;
-				temp_index += output_cols;
+				inpt_index += filter_stride * (input_cols - output_cols);
 			}
-			inpt_index -= output_rows * filter_stride * input_cols;
-			temp_index -= output_rows * output_cols; // = 0
-
-			inpt_index += input_cols * input_rows;
+			temp_index = 0; 
+			inpt_index += input_cols * (input_rows - output_rows * filter_stride);
 			weights_index += filter_size * filter_size;
-			//temp_index += output_cols * output_rows;
 		}
-		inpt_index -= input_depth * input_cols * input_rows;
-		weights_index -= input_depth * filter_size * filter_size;
-		//temp_index -= input_depth * output_cols * output_rows;
-
 		copy(temp.values, temp.values + output_cols * output_rows, &output->values[n*output_cols * output_rows]);
 		temp.make_zero();
 
-		weights_index += weights_cols;
+		weights_index += weights_cols - filter_size * filter_size * input_depth;
+		inpt_index = 0;
 		outpt_index += output_cols * output_rows;
-
-
 	}
 }
+
 
 void conv_ffw2(Activation* input, Activation* output, Matrix* weights, Vector* biases, int filter_size, int n_filters, int filter_stride, int padding) {
 	int input_cols = input->cols;
@@ -234,49 +202,71 @@ void conv_ffw2(Activation* input, Activation* output, Matrix* weights, Vector* b
 	int j_;
 
 	int inpt_index = 0;
-	int outpt_index = 0;
 	int weights_index = 0;
+	int outpt_index = 0;
+
 
 	for (n = 0; n < n_filters; n++) {
-		for (d = 0; d < input_depth; d++) {
 
-			for (j = 0; j < output_rows; j++) {
-				for (i = 0; i < output_cols; i++) {
-					// actual filter
-					for (int j_ = 0; j_ < filter_size; j_++) {
+		for (j = 0; j < output_rows; j++) {
+			for (i = 0; i < output_cols; i++) {
 
-						inpt_index += input_cols;
+				// actual filter
+				sum = 0;
+				for (d = 0; d < input_depth; d++) {
+					for (j_ = 0; j_ < filter_size; j_++) {
+						for (i_ = 0; i_ < filter_size; i++) {
+							sum += input->values[inpt_index];
+							inpt_index += 1;
+							weights_index += 1;
+							outpt_index;
+						}
+						inpt_index -= filter_size;
+						weights_index -= filter_size;
+						outpt_index;
+
+						inpt_index += input_cols * filter_stride;
 						weights_index += filter_size;
-
+						outpt_index;
 					}
+					inpt_index -= input_cols * filter_stride * filter_stride;
+					weights_index -= input_cols * filter_size;
+					outpt_index;
 
 
-
-					inpt_index += filter_stride;
-					outpt_index += 1;
+					inpt_index += input_cols * input_rows;
+					weights_index += filter_size * filter_size;
+					outpt_index;
 				}
-				inpt_index -= output_cols * filter_stride;
-				outpt_index -= output_cols;
 
+				inpt_index -= input_depth * input_cols * input_rows; // not 0 ! input_index will have been bigger than this temporarily
+				weights_index -= input_depth * filter_size * filter_size; // zero? no ! weights keep increasing because multiple filters ...
+				outpt_index;
 
-				inpt_index += filter_stride * input_cols;
-				outpt_index += output_cols;
+				output->values[outpt_index] = sum + biases->values[n];
+
+				inpt_index += filter_stride;
+				weights_index;
+				outpt_index += 1;
 			}
-			inpt_index -= output_rows * filter_stride * input_cols;
-			outpt_index -= output_rows * output_cols;
+			inpt_index -= output_cols * filter_stride;
+			weights_index;
+			outpt_index -= output_cols;
 
-			inpt_index += input_cols * input_rows;
-			weights_index += weights_rows * weights_cols;
-			outpt_index += output_cols * output_rows;
+			inpt_index += input_cols * filter_stride;
+			weights_index;
+			outpt_index += output_cols;
 		}
-		inpt_index -= input_depth * input_cols * input_rows;
-		weights_index -= input_depth * filter_size * filter_size;
-		outpt_index -= input_depth * output_cols * output_rows;
+		inpt_index -= output_rows * input_cols * filter_stride; // zero?
+		weights_index;
+		outpt_index -= output_rows * output_cols;
 
+		inpt_index;
 		weights_index += weights_cols;
-		outpt_index += output_cols * output_rows * input_depth;
+		outpt_index += output_cols * output_rows;
 	}
 }
+
 
 
 void pool_ffw(Activation* input, Activation* output, int pool_size, int pool_stride) {
