@@ -213,7 +213,7 @@ void conv_ffw2(Activation* input, Activation* output, Matrix* weights, Vector* b
 				sum = 0;
 				for (d = 0; d < input_depth; d++) {
 					for (j_ = 0; j_ < filter_size; j_++) {
-						for (i_ = 0; i_ < filter_size; i++) {
+						for (i_ = 0; i_ < filter_size; i_++) {
 							cerr << inpt_index << endl;
 							sum += input->values[inpt_index];
 							inpt_index += 1;
