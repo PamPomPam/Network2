@@ -113,7 +113,7 @@ void pool_ffw_test() {
     std::copy(weights, weights + length2, &weigs.values[0]);
 
     const int length3 = 2;
-    float a[length3] = { 100000, -100000};
+    float a[length3] = { 200000, 100000};
     Vector b(2);
     std::copy(a, a + length3, &b.values[0]);
 

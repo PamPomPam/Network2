@@ -174,7 +174,7 @@ void conv_ffw1(Activation* input, Activation* output, Matrix* weights, Vector* b
 						weights_index += filter_size;
 						
 					}
-					temp.values[temp_index] += biases->values[n] / output_cols / output_rows;
+					temp.values[temp_index] += biases->values[n] / input_depth;
 
 					inpt_index -= filter_size * input_cols;
 					weights_index -= filter_size * filter_size; // 0
