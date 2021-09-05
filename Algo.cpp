@@ -143,7 +143,8 @@ void conv_ffw1(Activation* input, Activation* output, Matrix* weights, Vector* b
 	int inpt_index = 0;
 	int outpt_index = 0;
 	int weights_index = 0;
-	int temp_index = weights_index; // ? right
+	int temp_index = 0;
+	//int temp_index = weights_index; // ? right
 
 	for (n = 0; n < n_filters; n++) {
 		for (d = 0; d < input_depth; d++) {
@@ -161,7 +162,7 @@ void conv_ffw1(Activation* input, Activation* output, Matrix* weights, Vector* b
 							float a = input->values[inpt_index];
 							float b = input->values[weights_index];
 							float c = input->values[weights_index];
-							temp.values[outpt_index] += weights->values[weights_index] * input->values[inpt_index];
+							temp.values[temp_index] += weights->values[weights_index] * input->values[inpt_index];
 
 							inpt_index += 1;
 							weights_index += 1;
@@ -173,7 +174,7 @@ void conv_ffw1(Activation* input, Activation* output, Matrix* weights, Vector* b
 						weights_index += filter_size;
 						
 					}
-					temp.values[outpt_index] += biases->values[n];
+					temp.values[temp_index] += biases->values[n];
 
 					inpt_index -= filter_size * input_cols;
 					weights_index -= filter_size * filter_size; // 0
@@ -190,20 +191,17 @@ void conv_ffw1(Activation* input, Activation* output, Matrix* weights, Vector* b
 				temp_index += output_cols;
 			}
 			inpt_index -= output_rows * filter_stride * input_cols;
-			temp_index -= output_rows * output_cols;
+			temp_index -= output_rows * output_cols; // = 0
 
 			inpt_index += input_cols * input_rows;
 			weights_index += filter_size * filter_size;
-			temp_index += output_cols * output_rows;
+			//temp_index += output_cols * output_rows;
 		}
 		inpt_index -= input_depth * input_cols * input_rows;
 		weights_index -= input_depth * filter_size * filter_size;
-		temp_index -= input_depth * output_cols * output_rows;
-
-		//cerr << output_cols * output_rows << endl;
+		//temp_index -= input_depth * output_cols * output_rows;
 
 		copy(temp.values, temp.values + output_cols * output_rows, &output->values[n*output_cols * output_rows]);
-
 		temp.make_zero();
 
 		weights_index += weights_cols;
