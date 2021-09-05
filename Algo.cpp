@@ -156,6 +156,7 @@ void conv_ffw1(Activation* input, Activation* output, Matrix* weights, Vector* b
 							cerr << weights_index << endl;
 							cerr << inpt_index << endl;
 							cerr << outpt_index << endl;
+							cerr << temp_index << endl;
 							cerr << "----" << endl;
 							float a = input->values[inpt_index];
 							float b = input->values[weights_index];
