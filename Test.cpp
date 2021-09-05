@@ -5,6 +5,8 @@
 #include <time.h>
 #include <algorithm>
 #include <fstream>
+#include <cstring>
+
 using namespace std;
 
 
