@@ -124,7 +124,7 @@ void pool_ffw_test() {
     int filter_stride = 1;
     int n_filters = 2;
 
-    conv_ffw1(&inpt, &output, &weigs, &b, filter_size, n_filters, filter_stride, 0);
+    //conv_ffw1(&inpt, &output, &weigs, &b, filter_size, n_filters, filter_stride, 0);
     conv_ffw2(&inpt, &output, &weigs, &b, filter_size, n_filters, filter_stride, 0);
     output.print();
     cerr << "finished" << endl;
