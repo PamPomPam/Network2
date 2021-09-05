@@ -179,29 +179,29 @@ void conv_ffw1(Activation* input, Activation* output, Matrix* weights, Vector* b
 
 
 					inpt_index += filter_stride;
-					outpt_index += 1;
+					temp_index += 1;
 				}
 				inpt_index -= output_cols * filter_stride;
-				outpt_index -= output_cols;
+				temp_index -= output_cols;
 
 
 				inpt_index += filter_stride * input_cols;
-				outpt_index += output_cols;
+				temp_index += output_cols;
 			}
 			inpt_index -= output_rows * filter_stride * input_cols;
-			outpt_index -= output_rows * output_cols;
+			temp_index -= output_rows * output_cols;
 
 			inpt_index += input_cols * input_rows;
 			weights_index += filter_size * filter_size;
-			outpt_index += output_cols * output_rows;
+			temp_index += output_cols * output_rows;
 		}
 		inpt_index -= input_depth * input_cols * input_rows;
 		weights_index -= input_depth * filter_size * filter_size;
-		outpt_index -= input_depth * output_cols * output_rows;
+		temp_index -= input_depth * output_cols * output_rows;
 
 		//cerr << output_cols * output_rows << endl;
 
-		//copy(temp.values, temp.values + output_cols * output_rows, &output->values[n*output_cols * output_rows]);
+		copy(temp.values, temp.values + output_cols * output_rows, &output->values[n*output_cols * output_rows]);
 
 		temp.make_zero();
 
