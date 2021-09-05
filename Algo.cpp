@@ -206,7 +206,7 @@ void conv_ffw1(Activation* input, Activation* output, Matrix* weights, Vector* b
 		temp.make_zero();
 
 		weights_index += weights_cols;
-		outpt_index += output_cols * output_rows * input_depth;
+		outpt_index += output_cols * output_rows;
 
 
 	}
