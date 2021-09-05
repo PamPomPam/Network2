@@ -228,11 +228,15 @@ void conv_ffw2(Activation* input, Activation* output, Matrix* weights, Vector* b
 						weights_index += filter_size;
 						outpt_index;
 					}
-					inpt_index -= input_cols * filter_stride * filter_stride;
+					cerr << "---" << endl;
+					cerr << inpt_index << endl;
+					inpt_index -= input_cols * filter_size * filter_stride;
 					weights_index -= input_cols * filter_size;
 					outpt_index;
+					cerr << inpt_index << endl;
 
-
+					cerr << input_cols << endl;
+					cerr << input_rows << endl;
 					inpt_index += input_cols * input_rows;
 					weights_index += filter_size * filter_size;
 					outpt_index;
