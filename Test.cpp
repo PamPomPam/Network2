@@ -115,7 +115,7 @@ void pool_ffw_test() {
     const int length3 = 2;
     float a[length3] = { 100000, -100000};
     Vector b(2);
-    std::copy(a, a + length2, &b.values[0]);
+    std::copy(a, a + length3, &b.values[0]);
 
     Activation output(2 * 4 * 2, 2, 2);
 
